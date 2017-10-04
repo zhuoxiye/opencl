@@ -5,7 +5,8 @@
 #include <time.h>
 
 
-#define dim 1000
+#define dim 1000  //Define size of matrix 1000*1000
+/*Code running in the OpenCL device  */
 const char *ProgramSource = 
 "__kernel void simpleMM(__global float* output,int widthA,int heightA,int widthB,int heightB,__global float* inputA,__global float* inputB,int TS){\n"
 "float sum;\n"
@@ -33,11 +34,9 @@ const char *ProgramSource =
 "      output[globalrow*widthB+globalcol] = sum; \n "
 "}\n";
 
-  cl_int wA=dim,hB=dim;
-  cl_int hA=dim,wB=dim;
+cl_int wA=dim,hB=dim;
+cl_int hA=dim,wB=dim;
   
-
-
 int main()
 {
 
@@ -52,8 +51,9 @@ int main()
   outputC = (float *)malloc(hA*wB*sizeof(float));
   verify = (float *)malloc(hA*wB*sizeof(float));
    //initialization
-   int i,j,k;
-  
+  int i,j,k;
+
+  //Define matrices
   for(i = 0;i<wA*hA;i++)
      {
       inputA[i] = rand()%100;
@@ -67,7 +67,7 @@ int main()
       verify[i] = 0;
     }
 
-   start = clock();
+  start = clock();
   for(i = 0; i<hA ; i++)
     {
     for(j=0; j<wB ; j++)
@@ -78,6 +78,7 @@ int main()
     }
   finish = clock();
 
+  //config OpenCL
   cl_int ciErrNum;
   cl_uint num_of_platforms=0;
   cl_uint num_of_devices=0;
@@ -152,7 +153,7 @@ int main()
       printf("succeed in creating command_queue\n");
     }
 	  
-//
+//create Buffer
   cl_mem bufferA = clCreateBuffer(ctx,CL_MEM_READ_ONLY,wA*hA*sizeof(float),NULL,&ciErrNum);
    if(ciErrNum != CL_SUCCESS)
     {
@@ -202,7 +203,7 @@ int main()
       printf("succeed in creating BufferC\n");
     }
   
-//
+//Create the program in Device
   cl_program myprog = clCreateProgramWithSource(ctx,1,(const char**)&ProgramSource,NULL,&ciErrNum);
   if(ciErrNum != CL_SUCCESS)
     {
