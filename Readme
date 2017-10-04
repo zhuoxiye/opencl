@@ -1,0 +1,4 @@
+In this project, I use OpenCL, a framework based on C for parallel programming of heterogeneous systems, 
+to implement speedup of matrix multiplication in Heterogeneous Processing Platform which brings together the latest technologies in multi-core CPUs, many-core GPUs, application specific many-cores CPUs and FPGAs in a single platform.
+
+The goal is to implement 1000*1000 matrix multiplication on CPU, GPU, FPGA and to compare their performance.
